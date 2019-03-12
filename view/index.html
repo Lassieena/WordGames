@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>しりとりアプリ</title>
+    <link rel="stylesheet" href="//cdn.rawgit.com/milligram/milligram/master/dist/milligram.min.css">
+    <!-- <link rel="stylesheet" href="style.css"> -->
+    <style>
+
+        .form-inline {
+            display: inline-flex;
+            display: flex;
+        }
+
+        #input_msg {
+            flex-grow: 5;
+        }
+
+        .btn {
+
+            margin: 0;
+            padding: 0;
+            width: 80px;
+            text-align: center;
+            margin-left: 5px;
+        }
+
+        li {
+            color: black;
+            font-size: 30px;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+            <form name="myform" id="myform" class="form-inline">
+                <input name="text" type="text" id="input_msg">
+                <button name="btn" class="btn btn-danger">送信</button>
+            </form>
+            <h3 id="name"></h3>
+            <hr>
+        
+
+        <ul id="message">
+            <li>しりとり</li>
+        </ul>
+
+    </div>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+        'use strict';
+        const socket = io();
+        $(() => {
+            socket.on('connect', () => {
+                let names = prompt('ユーザー名を入力してください');
+                socket.emit('setUserName', names);
+                if (names === "") {
+                    $('#name').text('ユーザー名: 匿名')
+                } else {
+                    $('#name').text('ユーザー名: ' + names);
+                }
+            });
+
+            $('#myform').submit(() => {
+                socket.emit('message', $('#input_msg').val());
+                $('#input_msg').val('');
+                return false;
+            });
+            socket.on('message', (msg) => {
+                $('#message').append($('<li>').text(msg));
+                // $('li').addClass('button button-outline');
+            });
+
+            
+        });
+
+    </script>
+
+    <!-- <script src="/routes/main.js"></script> -->
+</body>
+
+</html>

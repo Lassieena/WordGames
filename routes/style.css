@@ -1,0 +1,7 @@
+.clearfix {
+    display:inline-flex
+}
+
+li {
+    font-size: 30px;
+}
